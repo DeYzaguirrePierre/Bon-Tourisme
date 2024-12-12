@@ -1,0 +1,49 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-bt
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - bon-tourisme-network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-bt
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: bon_tourisme_db
+    volumes:
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - bon-tourisme-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-bt
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root_password
+    networks:
+      - bon-tourisme-network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog-bt
+    ports:
+      - "8025:8025"
+    networks:
+      - bon-tourisme-network
+
+networks:
+  bon-tourisme-network:
+    driver: bridge
+    name: bon-tourisme-network
