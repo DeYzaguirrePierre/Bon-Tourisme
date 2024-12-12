@@ -34,19 +34,19 @@ class LieuCrudController extends AbstractCrudController
             ->setRequired(true);
 
         $type =
-            AssociationField::new('type_lieu', 'Types de lieu')
+            AssociationField::new('typeLieux', 'Types de lieu')
             ->setFormTypeOption('by_reference', false) // nécessaire pour ManyToMany
             ->autocomplete()
             ->setRequired(true)
             ->formatValue(function ($value, $entity) {
                 // Récupère tous les noms des types de lieu associés et les transforme en chaîne
-                return implode(', ', $entity->getTypeLieu()->map(fn($typeLieu) => $typeLieu->getType())->toArray());
+                return implode(', ', $entity->getTypeLieux()->map(fn($typeLieu) => $typeLieu->getType())->toArray());
             });
 
         $moyAvis = IntegerField::new('moy_avis', 'Moyenne des avis')
             ->setFormTypeOption('disabled', true);
         $nbAvis = IntegerField::new('nb_avis', 'Nombre d\'avis')
-            ->setFormTypeOption('disabled', true);;
+            ->setFormTypeOption('disabled', true);
 
         $tabLieu[] = $image;
         $tabLieu[] = $desc;
