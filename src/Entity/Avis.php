@@ -80,4 +80,10 @@ class Avis
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return 'Avis de ' . ($this->user ? $this->user->getEmail() : 'Utilisateur inconnu') .
+            ' sur ' . ($this->lieu ? $this->lieu->getNom() : 'Lieu inconnu');
+    }
 }

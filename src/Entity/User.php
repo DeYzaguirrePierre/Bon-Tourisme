@@ -7,11 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,9 +28,6 @@ class User implements UserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    /**
-     * @var Collection<int, Avis>
-     */
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'user')]
     private Collection $avis;
 
@@ -51,7 +49,7 @@ class User implements UserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -61,13 +59,12 @@ class User implements UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // Assurez-vous que tous les utilisateurs ont au moins le rôle "ROLE_USER"
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
@@ -79,51 +76,14 @@ class User implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Avis>
-     */
-    public function getAvis(): Collection
-    {
-        return $this->avis;
-    }
-
-    public function addAvi(Avis $avi): static
-    {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
-            $avi->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvi(Avis $avi): static
-    {
-        if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
-            if ($avi->getUser() === $this) {
-                $avi->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    // Implémentation des méthodes de UserInterface
-
     public function getUserIdentifier(): string
-    {
-        return $this->email;
-    }
-
-    public function getUsername(): string
     {
         return $this->email;
     }
@@ -138,10 +98,47 @@ class User implements UserInterface
         return $this->isVerified;
     }
 
-    public function setVerified(bool $isVerified): static
+    public function setVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
 
         return $this;
+    }
+
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): self
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): self
+    {
+        if ($this->avis->removeElement($avi)) {
+            if ($avi->getUser() === $this) {
+                $avi->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getNbAvis(): int
+    {
+        return $this->avis->count();
+    }
+
+
+    public function __toString(): string
+    {
+        return $this->email ?? 'Utilisateur';
     }
 }

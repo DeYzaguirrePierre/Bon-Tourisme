@@ -3,14 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -18,25 +16,21 @@ class UserCrudController extends AbstractCrudController
     {
         return User::class;
     }
+
     public function configureFields(string $pageName): iterable
     {
-        return [
-            //IdField::new('id'),
-            EmailField::new('email')
-                ->setRequired(true),
-            ArrayField::new('roles')
-                ->setRequired(true),
-            TextField::new('password')
-                ->setRequired(true),
-            TextField::new('nom')
-                ->setRequired(true),
-            TextField::new('prenom')
-                ->setRequired(true),
-            DateField::new('dateNaissance')
-                ->setRequired(true),
-            IntegerField::new('nb_avis')
-                ->setFormTypeOption('disabled', true),
+        $fields = [
+            EmailField::new('email', 'Email')->setRequired(true),
+            ArrayField::new('roles', 'Rôles')->setRequired(true),
+            TextField::new('password', 'Mot de passe')->setRequired(true),
+            BooleanField::new('isVerified', 'Vérifié')->setFormTypeOption('disabled', true),
 
+            // Affiche uniquement le nombre d'avis dynamique
+            IntegerField::new('nbAvis', 'Nombre d\'avis')
+                ->setFormTypeOption('disabled', true)
+                ->formatValue(fn($value, $entity) => $entity->getNbAvis()),
         ];
+
+        return $fields;
     }
 }
