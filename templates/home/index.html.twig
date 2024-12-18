@@ -1,22 +1,10 @@
+{# templates/your_page.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil - Bon-Tourisme{% endblock %}
-
 {% block body %}
-<div class="container mx-auto mt-10 text-center">
-    <h1 class="text-4xl font-bold text-gray-800">Bienvenue sur Bon-Tourisme !</h1>
-    <p class="text-lg mt-4 text-gray-600">
-        Explorez les meilleurs endroits culturels et gastronomiques de votre région.
-    </p>
-    <div class="mt-6">
-        <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Découvrir
-        </a>
-    </div>
-    <div class="mt-4">
-        <a href="{{ path('app_login') }}" class="text-blue-500 hover:underline">
-            Se connecter
-        </a>
-    </div>
-</div>
+    <section>
+        {% include 'lieu/lieu_culturel.html.twig' with { 'lieux': lieux } %}
+        {# {% include 'lieu/lieu_naturel.html.twig' %}
+        {% include 'lieu/VIP.html.twig' %} #}
+    </section>
 {% endblock %}

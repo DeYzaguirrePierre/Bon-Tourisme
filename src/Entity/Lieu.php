@@ -25,11 +25,12 @@ class Lieu
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?float $moy_avis = null;
+    #[ORM\Column(nullable: true)]
+    private ?float $moy_avis = 0.0;
 
-    #[ORM\Column]
-    private ?int $nb_avis = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $nb_avis = 0;
+
 
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'lieu', orphanRemoval: true)]
     private Collection $avis;

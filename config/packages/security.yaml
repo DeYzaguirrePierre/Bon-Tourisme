@@ -17,18 +17,22 @@ security:
       lazy: true
       provider: app_user_provider
       form_login:
-        login_path: app_login # Page de connexion
-        check_path: app_login # Traitement de la connexion
-        default_target_path: / # Redirection après connexion réussie
-        always_use_default_target_path: true
+        login_path: app_login
+        check_path: app_login
+        default_target_path: /
+        enable_csrf: true
       logout:
         path: app_logout
-        target: / # Redirection après déconnexion
-      entry_point: form_login
+        target: /
+      remember_me:
+        secret: "%kernel.secret%"
+        lifetime: 3600
+        path: /
 
   access_control:
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/confirm-account, roles: PUBLIC_ACCESS }
     - { path: ^/register$, roles: PUBLIC_ACCESS }
     - { path: ^/login$, roles: PUBLIC_ACCESS }
     - { path: ^/logout$, roles: IS_AUTHENTICATED_FULLY }
-    - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/, roles: PUBLIC_ACCESS }

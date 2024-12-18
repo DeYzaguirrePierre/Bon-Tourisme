@@ -1,15 +1,22 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
-    secret: '%env(APP_SECRET)%'
+  secret: "%env(APP_SECRET)%"
 
-    # Note that the session will be started ONLY if you read or write from it.
-    session: true
+  # Activation des sessions
+  session:
+    handler_id: null # Utilisation du gestionnaire de sessions par défaut (fichiers)
+    cookie_secure: auto # Auto-configure le cookie sécurisé (true en HTTPS, false en HTTP)
+    cookie_samesite: lax # Protection SameSite pour éviter les attaques CSRF
 
-    #esi: true
-    #fragments: true
+  # Activation de la protection CSRF
+  csrf_protection: true
+
+  # Optionnel : configuration des fragments et ESI (si nécessaire)
+  #esi: true
+  #fragments: true
 
 when@test:
-    framework:
-        test: true
-        session:
-            storage_factory_id: session.storage.factory.mock_file
+  framework:
+    test: true
+    session:
+      storage_factory_id: session.storage.factory.mock_file

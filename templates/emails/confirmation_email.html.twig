@@ -6,14 +6,14 @@
     <title>Confirmation de votre compte</title>
 </head>
 <body>
-    <p>Bonjour,</p>
+    <p>Bonjour {{ user.email }},</p>
     <p>Merci de vous être inscrit sur notre site.</p>
     <p>Veuillez confirmer votre compte en cliquant sur le lien suivant :</p>
     <p>
-        <a href="{{ url('app_home') }}" style="color: #4CAF50; text-decoration: none;">
+        <a href="{{ url('app_confirm_account', {'token': confirmationToken}) }}">
             Confirmer mon compte
         </a>
     </p>
-    <p>À bientôt sur notre site !</p>
+    <p>À bientôt !</p>
 </body>
 </html>

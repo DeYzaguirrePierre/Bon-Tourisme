@@ -1,0 +1,54 @@
+<section class="relative mb-10 md:my-10">
+    <a href="#"
+       class="absolute z-10 top-1 right-1 text-[#763538] hover:text-white md:top-4 md:right-4 md:rounded-md md:bg-[#763538] md:text-white md:hover:bg-white md:hover:text-[#763538] md:border border-[#763538] px-5 py-2.5 text-sm font-medium">
+       En voir plus ...
+    </a>
+
+    <h1 class="oneLine italic font-extralight opacity-75 text-center py-10 text-[#763538]">
+        Les Lieux Naturels
+    </h1>
+
+    <div id="carousel" class="carousel pb-10">
+        {% for lieu in lieu %}
+            {# Vérification si le lieu appartient au type "Naturel" #}
+            {% for typeLieu in lieu.typeLieu %}
+                {% if typeLieu.type == 'Naturel' %}
+                    <div class="carousel-slide relative text-center rounded-lg overflow-hidden w-64 h-48 m-5">
+                        <img src="/uploads/{{ lieu.image }}" class="w-full h-48 object-cover" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-opacity-75 bg-[#763538] text-white py-2 text-center">
+                            <h2 class="text-xl font-bold">{{ lieu.nom }}</h2>
+                            <a href="{{ path('lieu_detail', { id: lieu.id }) }}"
+                               class="mt-2 inline-block border border-[#763538] bg-[#763538] text-white rounded-md py-2 px-4 hover:bg-white hover:text-[#763538] transition-colors">
+                               En Savoir plus ...
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    $('#carousel').slick({
+        slidesToShow: window.innerWidth > 480 ? 1.95 : 5.95,
+        slidesToScroll: 1,
+        variableWidth: true,
+        infinite: true,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        arrows: true,
+        responsive: [
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 5.95,
+                    slidesToScroll: 1,
+                    variableWidth: true,
+                }
+            }
+        ]
+    });
+});
+</script>

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lieux Culturels{% endblock %}
+
+{% block body %}
+<section class="relative mb-10 md:my-10">
+    <h1 class="oneLine italic font-extralight opacity-75 text-center py-10 text-[#763538]">
+        Les Lieux Culturels
+    </h1>
+
+    {% if lieux is empty %}
+        <p class="text-center text-[#763538]">Aucun lieu culturel disponible pour le moment.</p>
+    {% else %}
+        <div id="carousel" class="carousel pb-10">
+            {% for lieu in lieux %}
+                {% for typeLieu in lieu.typeLieux %}
+                    {% if typeLieu.type == 'Culturel' %}
+                        <div class="carousel-slide relative text-center rounded-lg overflow-hidden w-64 h-48 m-5">
+                            <img src="/uploads/{{ lieu.image }}" class="w-full h-48 object-cover" />
+                            <div class="absolute bottom-0 left-0 right-0 bg-opacity-75 bg-[#763538] text-white py-2 text-center">
+                                <h2 class="text-xl font-bold">{{ lieu.nom }}</h2>
+                                <a href="{{ path('lieu_detail', { id: lieu.id }) }}"
+                                   class="mt-2 inline-block border border-[#763538] bg-[#763538] text-white rounded-md py-2 px-4 hover:bg-white hover:text-[#763538] transition-colors">
+                                   En Savoir plus ...
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

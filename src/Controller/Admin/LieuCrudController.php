@@ -3,11 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Lieu;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class LieuCrudController extends AbstractCrudController
 {
@@ -18,6 +19,7 @@ class LieuCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        dump('Formulaire généré');
         return [
             TextField::new('nom', 'Nom')->setRequired(true),
             ImageField::new('image', 'Image')
