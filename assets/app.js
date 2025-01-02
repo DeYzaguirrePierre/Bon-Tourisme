@@ -1,10 +1,13 @@
-import './bootstrap.js';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
-import './styles/app.css';
+import "./styles/app.css"; // Importez vos styles
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import $ from "jquery";
+import "slick-carousel";
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+$(document).ready(function () {
+  $(".your-slider-class").slick({
+    infinite: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+  });
+});

@@ -28,14 +28,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'user')]
-    private Collection $avis;
-
-    #[ORM\Column]
+    #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $confirmationToken = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Avis::class, orphanRemoval: true)]
+    private Collection $avis;
 
     public function __construct()
     {
@@ -62,7 +65,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_USER'; // Garantie que chaque utilisateur a au moins ROLE_USER
 
         return array_unique($roles);
     }
@@ -93,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // Si tu stockes des informations sensibles temporairement, efface-les ici
+        // Si des informations sensibles sont temporairement stockées, elles doivent être effacées ici
     }
 
     public function isVerified(): bool
@@ -113,21 +116,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->avis;
     }
 
-    public function addAvi(Avis $avi): self
+    public function addAvis(Avis $avis): self
     {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
-            $avi->setUser($this);
+        if (!$this->avis->contains($avis)) {
+            $this->avis->add($avis);
+            $avis->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeAvi(Avis $avi): self
+    public function removeAvis(Avis $avis): self
     {
-        if ($this->avis->removeElement($avi)) {
-            if ($avi->getUser() === $this) {
-                $avi->setUser(null);
+        if ($this->avis->removeElement($avis)) {
+            if ($avis->getUser() === $this) {
+                $avis->setUser(null);
             }
         }
 
@@ -139,10 +142,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->avis->count();
     }
 
-
-    public function __toString(): string
+    public function getResetToken(): ?string
     {
-        return $this->email ?? 'Utilisateur';
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
     }
 
     public function getConfirmationToken(): ?string
@@ -155,5 +164,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->confirmationToken = $confirmationToken;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->email ?? 'Utilisateur';
     }
 }

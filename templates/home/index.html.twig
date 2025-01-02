@@ -4,7 +4,7 @@
 {% block body %}
     <section>
         {% include 'lieu/lieu_culturel.html.twig' with { 'lieux': lieux } %}
-        {# {% include 'lieu/lieu_naturel.html.twig' %}
-        {% include 'lieu/VIP.html.twig' %} #}
+        {% include 'lieu/lieu_naturel.html.twig' with { 'lieux': lieux } %}
+        {% include 'lieu/lieu_vip.html.twig' with { 'lieux': lieux } %}
     </section>
 {% endblock %}

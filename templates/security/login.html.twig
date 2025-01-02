@@ -3,63 +3,77 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <div class="flex flex-col items-center mt-5">
-        {% for message in app.flashes('success') %}
-            <div class="mb-4 text-center text-white bg-green-500 p-2 rounded-lg">
-                {{ message }}
-            </div>
-        {% endfor %}
-        
-        {% for message in app.flashes('danger') %}
-            <div class="mb-4 text-center text-white bg-red-500 p-2 rounded-lg">
-                {{ message }}
-            </div>
-        {% endfor %}
-
-        <div class="w-full max-w-md px-8 py-6 bg-[#763538] text-white shadow-lg rounded-lg">
-            {% if error %}
-                <div class="mb-4 text-center text-white">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
-
-            <h1 class="text-xl font-semibold text-center mb-6">Veuillez vous connecter</h1>
-
-            <form method="post" action="{{ path('app_login') }}">
-                {# Champ caché pour le CSRF Token #}
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                {# Champ Username (Email) #}
-                <div class="mb-4">
-                    <label for="_username" class="block text-sm font-medium text-white">Email</label>
-                    <input type="email" name="_username" id="_username" value="{{ last_username }}" 
-                           class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm text-[#763538] focus:outline-none focus:ring-white focus:border-white" 
-                           required autofocus>
-                </div>
-
-                {# Champ Mot de Passe #}
-                <div class="mb-4">
-                    <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
-                    <input type="password" name="_password" id="password" 
-                           class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm text-[#763538] focus:outline-none focus:ring-white focus:border-white" 
-                           required>
-                </div>
-
-                {# Option Se souvenir de moi #}
-                <div class="mb-4 flex items-center">
-                    <input type="checkbox" name="_remember_me" id="_remember_me" 
-                           class="h-4 w-4 text-[#763538] border-gray-300 rounded focus:ring-white">
-                    <label for="_remember_me" class="ml-2 block text-sm text-white">
-                        Se souvenir de moi
-                    </label>
-                </div>
-
-                {# Bouton Soumission #}
-                <button type="submit" 
-                        class="w-full py-2 px-4 bg-white text-[#763538] font-medium border border-white rounded-md hover:bg-[#9b4545] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
-                    Se connecter
-                </button>
-            </form>
+<div class="flex flex-col items-center mt-5">
+    {# Affichage des messages flash #}
+    {% for message in app.flashes('success') %}
+        <div class="mb-4 text-center text-white bg-green-500 p-2 rounded-lg">
+            {{ message }}
         </div>
+    {% endfor %}
+    
+    {% for message in app.flashes('danger') %}
+        <div class="mb-4 text-center text-white bg-red-500 p-2 rounded-lg">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="w-full max-w-md px-8 py-6 bg-[#763538] text-white shadow-lg rounded-lg">
+        {% if error %}
+            <div class="mb-4 text-center text-white bg-red-500 p-2 rounded-lg">
+                {% if error.messageKey == 'Adresse email invalide.' %}
+                    L'adresse email que vous avez saisie n'est pas valide. Veuillez réessayer.
+                {% elseif error.messageKey == 'Invalid credentials.' %}
+                    Le mot de passe est incorrect. Veuillez réessayer.
+                {% else %}
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <h1 class="text-xl font-semibold text-center mb-6">Veuillez vous connecter</h1>
+
+        <form method="post" action="{{ path('app_login') }}">
+            {# Champ caché pour le CSRF Token #}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            {# Champ Email #}
+            <div class="mb-4">
+                <label for="_username" class="block text-sm font-medium text-white">Email</label>
+                <input type="email" name="_username" id="_username" value="{{ last_username }}" 
+                       class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm text-[#763538] focus:outline-none focus:ring-white focus:border-white" 
+                       required autofocus>
+            </div>
+
+            {# Champ Mot de Passe #}
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
+                <input type="password" name="_password" id="password" 
+                       class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm text-[#763538] focus:outline-none focus:ring-white focus:border-white" 
+                       required>
+            </div>
+
+            {# Lien vers Mot de passe oublié #}
+            <div class="mb-4 text-right">
+                <a href="{{ path('app_forgot_password') }}" class="text-xs text-white underline hover:text-gray-300">
+                    Mot de passe oublié ?
+                </a>
+            </div>
+
+            {# Option Se souvenir de moi #}
+            <div class="mb-4 flex items-center">
+                <input type="checkbox" name="_remember_me" id="_remember_me" 
+                       class="h-4 w-4 text-[#763538] border-gray-300 rounded focus:ring-white">
+                <label for="_remember_me" class="ml-2 block text-sm text-white">
+                    Se souvenir de moi
+                </label>
+            </div>
+
+            {# Bouton Soumission #}
+            <button type="submit" 
+                    class="w-full py-2 px-4 bg-white text-[#763538] font-medium border border-white rounded-md hover:bg-[#9b4545] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
+                Se connecter
+            </button>
+        </form>
     </div>
+</div>
 {% endblock %}
