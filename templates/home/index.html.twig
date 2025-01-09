@@ -1,10 +1,9 @@
-{# templates/your_page.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
     <section>
-        {% include 'lieu/lieu_culturel.html.twig' with { 'lieux': lieux } %}
-        {% include 'lieu/lieu_naturel.html.twig' with { 'lieux': lieux } %}
-        {% include 'lieu/lieu_vip.html.twig' with { 'lieux': lieux } %}
+        {% include 'lieu/lieu_culturel.html.twig' with { 'lieux': lieux_culturels } %}
+        {% include 'lieu/lieu_naturel.html.twig' with { 'lieux': lieux_naturels } %}
+        {% include 'lieu/lieu_vip.html.twig' with { 'lieux': lieux_vip } %}
     </section>
 {% endblock %}

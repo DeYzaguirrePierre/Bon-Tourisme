@@ -5,56 +5,61 @@ namespace App\Controller;
 use App\Repository\LieuRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class LieuController extends AbstractController
 {
-    #[Route('/lieux-culturels', name: 'lieu_culturel')]
-    public function listCulturels(LieuRepository $lieuRepository): Response
+    private $lieuRepository;
+
+    public function __construct(LieuRepository $lieuRepository)
     {
-        $lieux = $lieuRepository->findByType('Culturel');
+        $this->lieuRepository = $lieuRepository;
+    }
 
-        if (empty($lieux)) {
-            $this->addFlash('warning', 'Aucun lieu culturel trouvé.');
-        }
+    #[Route('/', name: 'app_home')]
+    public function index(): Response
+    {
+        $lieux_culturels = $this->lieuRepository->findByType('Culturel');
+        $lieux_naturels = $this->lieuRepository->findByType('Naturel');
+        $lieux_vip = $this->lieuRepository->findByType('VIP');
 
-        return $this->render('lieu/lieu_culturel.html.twig', [
-            'lieux' => $lieux,
+        return $this->render('home/index.html.twig', [
+            'lieux_culturels' => $lieux_culturels,
+            'lieux_naturels' => $lieux_naturels,
+            'lieux_vip' => $lieux_vip,
         ]);
     }
 
-    #[Route('/lieux-naturels', name: 'lieu_naturel')]
-    public function listNaturels(LieuRepository $lieuRepository): Response
+    #[Route('/lieux/{type}', name: 'lieu_list')]
+    public function listByType(string $type): Response
     {
-        $lieux = $lieuRepository->findByType('Naturel');
+        $typesMapping = [
+            'culturels' => 'Culturel',
+            'naturels' => 'Naturel',
+            'vip' => 'VIP',
+        ];
 
-        if (empty($lieux)) {
-            $this->addFlash('warning', 'Aucun lieu naturel trouvé.');
+        $typeLabel = $typesMapping[strtolower($type)] ?? null;
+
+        if (!$typeLabel) {
+            throw $this->createNotFoundException('Type de lieu non valide.');
         }
 
-        return $this->render('lieu/lieu_naturel.html.twig', [
-            'lieux' => $lieux,
-        ]);
-    }
-
-    #[Route('/lieux-vip', name: 'lieu_vip')]
-    public function listVIP(LieuRepository $lieuRepository): Response
-    {
-        $lieux = $lieuRepository->findByType('VIP');
+        $lieux = $this->lieuRepository->findByType($typeLabel);
 
         if (empty($lieux)) {
-            $this->addFlash('warning', 'Aucun lieu VIP trouvé.');
+            $this->addFlash('warning', "Aucun lieu $typeLabel trouvé.");
         }
 
-        return $this->render('lieu/lieu_vip.html.twig', [
+        return $this->render("lieu/lieu_{$type}.html.twig", [
             'lieux' => $lieux,
         ]);
     }
 
     #[Route('/lieu/{id}', name: 'lieu_detail')]
-    public function detail(int $id, LieuRepository $lieuRepository): Response
+    public function detail(int $id): Response
     {
-        $lieu = $lieuRepository->find($id);
+        $lieu = $this->lieuRepository->find($id);
 
         if (!$lieu) {
             throw $this->createNotFoundException('Lieu introuvable');

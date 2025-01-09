@@ -2,36 +2,54 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/images/Logo_icon.ico" />
-        
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="/images/Logo_icon.ico">
 
-        <!-- Slick Carousel -->
-        {# <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script> #}
-        
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="{{ asset('assets/styles/app.css') }}">
-        <link rel="stylesheet" href="{{ asset('assets/styles/slider.css') }}">
+        {% block stylesheets %}
+
+            <!-- Tailwind CSS -->
+            <script src="https://cdn.tailwindcss.com"></script>
+
+            <!-- CSS Base-->
+            {{ encore_entry_link_tags('app-style') }}
+            
+            <!-- Swiper CDN CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+            
+            <!-- Swiper CUSTOM CSS -->
+            {{ encore_entry_link_tags('swiper-style') }}
+
+        {% endblock %}
+
 
         <title>{% block title %}Bon Tourisme{% endblock %}</title>
     </head>
+
     <body class="bg-white md:text-dark">
+
         <!-- Navbar -->
         {% include 'component/navbar.html.twig' %}
         
         <!-- Main Content -->
-        {% block body %}{% endblock %}
+        <main>
+            {% block body %}{% endblock %}
+        </main>
         
         <!-- Footer -->
         {% include 'component/footer.html.twig' %}
 
-        <!-- Custom JavaScript -->
-        <script src="{{ asset('assets/scripts/app.js') }}"></script>
-        <script src="{{ asset('assets/scripts/slider.js') }}"></script>
+        <!-- Scripts -->
+        {% block javascripts %}
+
+            <!-- Scripts JS -->
+            {{ encore_entry_script_tags('app') }}
+
+            {# <!-- Scripts Swiper JS -->
+            <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> #}
+            
+            <!-- Scripts Swiper JS -->
+            {{ encore_entry_script_tags('swiper') }}
+
+        {% endblock %}
     </body>
 </html>

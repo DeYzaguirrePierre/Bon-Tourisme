@@ -1,28 +1,35 @@
-{% block body %}
 <div class="container mx-auto my-10">
     <h1 class="text-center text-2xl font-bold text-[#763538] mb-6">Les Lieux Naturels</h1>
     
     {% if lieux is empty %}
         <p class="text-center text-gray-600">Aucun lieu naturel disponible pour le moment.</p>
     {% else %}
-        <div class="flex flex-wrap justify-center">
-            {% for lieu in lieux %}
-                {% for typeLieu in lieu.typeLieux %}
-                    {% if typeLieu.type == 'Naturel' %}
-                        <div class="bg-white shadow-md rounded-lg overflow-hidden w-64 m-4">
-                            <img src="/uploads/{{ lieu.image }}" alt="{{ lieu.nom }}" class="w-full h-40 object-cover">
-                            <div class="p-4">
-                                <h2 class="text-lg font-semibold text-[#763538]">{{ lieu.nom }}</h2>
-                                <p class="text-gray-600">{{ lieu.description | slice(0, 100) ~ '...' }}</p>
-                                <a href="{{ path('lieu_detail', { id: lieu.id }) }}" class="text-[#763538] underline mt-2 block">
-                                    En savoir plus...
-                                </a>
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                {% for lieu in lieux %}
+                    {% for typeLieu in lieu.typeLieux %}
+                        {% if typeLieu.type == 'Naturel' %}
+                            <div class="swiper-slide">
+                                <div class="bg-white shadow-md rounded-lg overflow-hidden w-64 m-4">
+                                    <img src="/uploads/{{ lieu.image }}" alt="{{ lieu.nom }}" class="w-full h-40 object-cover">
+                                    <div class="p-4">
+                                        <h2 class="text-lg font-semibold text-[#763538]">{{ lieu.nom }}</h2>
+                                        <p class="text-gray-600">{{ lieu.description | slice(0, 100) ~ '...' }}</p>
+                                        <a href="{{ path('lieu_detail', { id: lieu.id }) }}" class="text-[#763538] underline mt-2 block">
+                                            En savoir plus...
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
+            </div>
+            <!-- Navigation buttons -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <!-- Pagination -->
+            <div class="swiper-pagination"></div>
         </div>
     {% endif %}
 </div>
-{% endblock %}

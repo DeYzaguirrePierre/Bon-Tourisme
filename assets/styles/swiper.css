@@ -1,0 +1,26 @@
+.swiper {
+  width: 100%;
+  height: auto;
+}
+
+.swiper-slide {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #763538; /* Adaptez selon votre charte graphique */
+  display: block;
+}
+
+.swiper-pagination {
+  position: relative;
+  text-align: center;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #763538;
+}
