@@ -26,7 +26,6 @@
     "webpack-notifier": "^1.15.0"
   },
   "dependencies": {
-    "core-js": "^3.40.0",
-    "swiper": "^11.2.0"
+    "core-js": "^3.40.0"
   }
 }

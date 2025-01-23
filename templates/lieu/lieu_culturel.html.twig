@@ -1,35 +1,41 @@
 <div class="container mx-auto my-10">
-    <h1 class="text-center text-2xl font-bold text-[#763538] mb-6">Les Lieux Culturels</h1>
-    
+    <div class="relative mb-6">
+        <h1 class="text-center text-2xl font-bold text-[#763538] mb-6">Les Lieux Culturels</h1>
+        <a href="{{ path('lieu_list', { type: 'culturels' }) }}">
+            <button 
+                class="absolute right-0 top-0 py-1 px-3 bg-[#763538] text-white font-medium border border-[#763538] rounded-md hover:bg-white hover:text-[#9b4545] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9b4545] text-sm">
+                Voir tous →
+            </button>
+        </a>
+    </div>
+
     {% if lieux is empty %}
         <p class="text-center text-gray-600">Aucun lieu culturel disponible pour le moment.</p>
     {% else %}
-        <div class="swiper mySwiper" style="width: 100%; height: auto;">
+        <div class="swiper mySwiper">
             <div class="swiper-wrapper">
                 {% for lieu in lieux %}
-                    {% for typeLieu in lieu.typeLieux %}
-                        {% if typeLieu.type == 'Culturel' %}
-                            <div class="swiper-slide">
-                                <div class="bg-white shadow-md rounded-lg overflow-hidden w-64 m-4">
-                                    <img src="/uploads/{{ lieu.image }}" alt="{{ lieu.nom }}" class="w-full h-40 object-cover">
-                                    <div class="p-4">
-                                        <h2 class="text-lg font-semibold text-[#763538]">{{ lieu.nom }}</h2>
-                                        <p class="text-gray-600">{{ lieu.description | slice(0, 100) ~ '...' }}</p>
-                                        <a href="{{ path('lieu_detail', { id: lieu.id }) }}" class="text-[#763538] underline mt-2 block">
-                                            En savoir plus...
-                                        </a>
-                                    </div>
-                                </div>
+                    <div class="swiper-slide">
+                        <div class="bg-white shadow-md rounded-lg overflow-hidden w-64 m-4">
+                            <img src="/uploads/{{ lieu.image }}" alt="{{ lieu.nom }}" class="w-full h-40 object-cover">
+                            <div class="p-4">
+                                <h2 class="text-lg font-semibold text-[#763538]">{{ lieu.nom }}</h2>
+                                <p class="text-gray-600">{{ lieu.description | slice(0, 100) ~ '...' }}</p>
+                                <a href="{{ path('lieu_detail', { id: lieu.id }) }}" class="text-[#763538] underline mt-2 block">
+                                    En savoir plus...
+                                </a>
                             </div>
-                        {% endif %}
-                    {% endfor %}
+                        </div>
+                    </div>
                 {% endfor %}
             </div>
             <!-- Navigation buttons -->
-            <div class="swiper-button-next swiper-button-next-culturel"></div>
-            <div class="swiper-button-prev swiper-button-prev-culturel"></div>
-            <!-- Pagination -->
-            <div class="swiper-pagination swiper-pagination-culturel"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
         </div>
     {% endif %}
 </div>
+{% block javascripts %}
+    {{ encore_entry_script_tags('swiper_base') }}
+{% endblock %}

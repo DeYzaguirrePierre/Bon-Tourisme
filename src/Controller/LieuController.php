@@ -51,7 +51,8 @@ class LieuController extends AbstractController
             $this->addFlash('warning', "Aucun lieu $typeLabel trouvé.");
         }
 
-        return $this->render("lieu/lieu_{$type}.html.twig", [
+        return $this->render('lieu/list.html.twig', [
+            'type' => ucfirst($type), // Affiche le type sous un format utilisateur
             'lieux' => $lieux,
         ]);
     }

@@ -6,9 +6,9 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 
 Encore.setOutputPath("public/build/")
   .setPublicPath("/build")
-  .addEntry("swiper", "./assets/scripts/swiper.js")
-  .addStyleEntry("swiper-style", "./assets/styles/swiper.css")
   .addEntry("app", "./assets/scripts/app.js")
+  .addEntry("swiper_base", "./assets/scripts/swiper_base.js")
+  .addEntry("swiper_list", "./assets/scripts/swiper_list.js")
   .addStyleEntry("app-style", "./assets/styles/app.css")
   .splitEntryChunks()
   .enableSingleRuntimeChunk()

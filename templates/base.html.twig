@@ -1,55 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="/images/Logo_icon.ico">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/images/Logo_icon.ico" />
 
-        {% block stylesheets %}
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-            <!-- Tailwind CSS -->
-            <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Swiper CSS (via CDN) -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
 
-            <!-- CSS Base-->
-            {{ encore_entry_link_tags('app-style') }}
-            
-            <!-- Swiper CDN CSS -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-            
-            <!-- Swiper CUSTOM CSS -->
-            {{ encore_entry_link_tags('swiper-style') }}
+    <!-- Styles -->
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app-style') }}
+    {% endblock %}
 
-        {% endblock %}
+    <title>{% block title %}Bon Tourisme{% endblock %}</title>
+</head>
+<body class="bg-white md:text-dark">
+    <!-- Navbar -->
+    {% include 'component/navbar.html.twig' %}
 
+    <!-- Main Content -->
+    <main>
+        {% block body %}{% endblock %}
+    </main>
 
-        <title>{% block title %}Bon Tourisme{% endblock %}</title>
-    </head>
+    <!-- Footer -->
+    {% include 'component/footer.html.twig' %}
 
-    <body class="bg-white md:text-dark">
+    <!-- Swiper JS (via CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-        <!-- Navbar -->
-        {% include 'component/navbar.html.twig' %}
-        
-        <!-- Main Content -->
-        <main>
-            {% block body %}{% endblock %}
-        </main>
-        
-        <!-- Footer -->
-        {% include 'component/footer.html.twig' %}
-
-        <!-- Scripts -->
-        {% block javascripts %}
-
-            <!-- Scripts JS -->
-            {{ encore_entry_script_tags('app') }}
-
-            {# <!-- Scripts Swiper JS -->
-            <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> #}
-            
-            <!-- Scripts Swiper JS -->
-            {{ encore_entry_script_tags('swiper') }}
-
-        {% endblock %}
-    </body>
+    <!-- Scripts -->
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+        {{ encore_entry_script_tags('swiper_base') }}
+        {{ encore_entry_script_tags('swiper_list') }}
+    {% endblock %}
+</body>
 </html>
