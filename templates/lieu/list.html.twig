@@ -3,7 +3,7 @@
 {% block body %}
 <div class="container mx-auto my-10 slider-container">
     <h1 class="text-center text-2xl font-bold text-[#763538] mb-6">Liste des Lieux {{ type }}</h1>
-    
+
     {% if lieux is empty %}
         <p class="text-center text-gray-600">Aucun lieu trouvé pour le type "{{ type }}".</p>
     {% else %}
@@ -13,7 +13,30 @@
                  src="/uploads/{{ lieux[0].image }}" 
                  alt="{{ lieux[0].nom }}" 
                  class="w-full h-60 object-cover rounded-lg mb-4">
-            <h2 id="active-slide-title" class="text-2xl font-semibold text-[#763538] mb-2">{{ lieux[0].nom }}</h2>
+            
+            <div class="flex justify-between items-center">
+                <h2 id="active-slide-title" class="text-2xl font-semibold text-[#763538] mb-2">
+                    {{ lieux[0].nom }}
+                </h2>
+
+                <!-- Affichage des étoiles dynamiques -->
+                <div id="active-slide-rating" class="flex items-center">
+                    {% set moyenne = lieux[0].getMoyAvis %}
+                    {% for i in 1..5 %}
+                        {% if i <= moyenne %}
+                            <i class="fas fa-star text-yellow-500 text-xl"></i>
+                        {% elseif i - 0.5 < moyenne %}
+                            <i class="fas fa-star-half-alt text-yellow-500 text-xl"></i>
+                        {% else %}
+                            <i class="far fa-star text-gray-300 text-xl"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span id="active-slide-reviews" class="text-gray-500 text-sm ml-2">
+                        ({{ lieux[0].getNbAvis }} avis)
+                    </span>
+                </div>
+            </div>
+
             <p id="active-slide-description" class="text-gray-600">{{ lieux[0].description }}</p>
         </div>
 
@@ -24,7 +47,9 @@
                     <div class="swiper-slide cursor-pointer"
                          data-name="{{ lieu.nom }}"
                          data-description="{{ lieu.description }}"
-                         data-image="/uploads/{{ lieu.image }}">
+                         data-image="/uploads/{{ lieu.image }}"
+                         data-rating="{{ lieu.getMoyAvis }}"
+                         data-reviews="{{ lieu.getNbAvis }}">
                         <div class="bg-white shadow-md rounded-lg overflow-hidden w-64 m-4">
                             <img src="/uploads/{{ lieu.image }}" alt="{{ lieu.nom }}" class="w-full h-40 object-cover">
                             <div class="p-4">
@@ -42,6 +67,7 @@
     {% endif %}
 </div>
 {% endblock %}
+
 {% block javascripts %}
     {{ encore_entry_script_tags('swiper_list') }}
 {% endblock %}

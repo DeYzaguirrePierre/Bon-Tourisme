@@ -31,7 +31,6 @@ class Lieu
     #[ORM\Column(nullable: true)]
     private ?int $nb_avis = 0;
 
-
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'lieu', orphanRemoval: true)]
     private Collection $avis;
 
@@ -41,7 +40,7 @@ class Lieu
     public function __construct()
     {
         $this->avis = new ArrayCollection();
-        $this->typeLieux = new ArrayCollection(); // Initialisation de la relation
+        $this->typeLieux = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -57,7 +56,6 @@ class Lieu
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -69,7 +67,6 @@ class Lieu
     public function setImage(string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -81,31 +78,45 @@ class Lieu
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
-    public function getMoyAvis(): ?float
+    /**
+     * Calcule dynamiquement la moyenne des avis.
+     */
+    public function getMoyAvis(): float
     {
-        return $this->moy_avis;
+        if ($this->avis->isEmpty()) {
+            return 0.0;
+        }
+
+        $totalNotes = array_sum($this->avis->map(fn($a) => $a->getNote())->toArray());
+        return round($totalNotes / $this->avis->count(), 1);
     }
 
-    public function setMoyAvis(float $moy_avis): static
+    /**
+     * Définit la moyenne des avis manuellement.
+     */
+    public function setMoyAvis(float $moyAvis): static
     {
-        $this->moy_avis = $moy_avis;
-
+        $this->moy_avis = $moyAvis;
         return $this;
     }
 
-    public function getNbAvis(): ?int
+    /**
+     * Retourne le nombre total d'avis.
+     */
+    public function getNbAvis(): int
     {
-        return $this->nb_avis;
+        return $this->avis->count();
     }
 
-    public function setNbAvis(int $nb_avis): static
+    /**
+     * Définit le nombre d'avis.
+     */
+    public function setNbAvis(int $nbAvis): static
     {
-        $this->nb_avis = $nb_avis;
-
+        $this->nb_avis = $nbAvis;
         return $this;
     }
 
@@ -117,24 +128,22 @@ class Lieu
         return $this->avis;
     }
 
-    public function addAvi(Avis $avi): static
+    public function addAvis(Avis $avis): static
     {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
-            $avi->setLieu($this);
+        if (!$this->avis->contains($avis)) {
+            $this->avis->add($avis);
+            $avis->setLieu($this);
         }
-
         return $this;
     }
 
-    public function removeAvi(Avis $avi): static
+    public function removeAvis(Avis $avis): static
     {
-        if ($this->avis->removeElement($avi)) {
-            if ($avi->getLieu() === $this) {
-                $avi->setLieu(null);
+        if ($this->avis->removeElement($avis)) {
+            if ($avis->getLieu() === $this) {
+                $avis->setLieu(null);
             }
         }
-
         return $this;
     }
 
@@ -151,14 +160,12 @@ class Lieu
         if (!$this->typeLieux->contains($typeLieu)) {
             $this->typeLieux->add($typeLieu);
         }
-
         return $this;
     }
 
     public function removeTypeLieux(TypeLieu $typeLieu): static
     {
         $this->typeLieux->removeElement($typeLieu);
-
         return $this;
     }
 

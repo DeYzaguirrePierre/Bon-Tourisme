@@ -4,48 +4,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const mainSlider = new Swiper(".mySwiper2", {
     grabCursor: true,
-    slidesPerView: 4, // Ajusté pour éviter le débordement
-    spaceBetween: 70, // Ajuste l'espace entre les slides
-    centeredSlides: true, // Permet de bien centrer la slide active
-    initialSlide: 0, // Active la première slide par défaut
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
+    slidesPerView: 4,
+    spaceBetween: 70,
+    centeredSlides: true,
+    initialSlide: 0,
   });
 
   const panelImage = document.getElementById("active-slide-image");
   const panelTitle = document.getElementById("active-slide-title");
   const panelDescription = document.getElementById("active-slide-description");
+  const panelRating = document.getElementById("active-slide-rating");
+  const panelReviews = document.getElementById("active-slide-reviews");
 
   function updateActiveSlide(slider) {
-    const activeSlide = slider.slides[slider.realIndex]; // `realIndex` empêche les glitchs
+    const activeSlide = slider.slides[slider.realIndex];
+
     if (activeSlide) {
       const imgElement = activeSlide.querySelector("img");
       if (imgElement) {
         panelImage.src = imgElement.src;
         panelImage.alt = imgElement.alt;
       }
+
       const name = activeSlide.getAttribute("data-name");
       const description = activeSlide.getAttribute("data-description");
+      const rating = parseFloat(activeSlide.getAttribute("data-rating"));
+      const reviews = activeSlide.getAttribute("data-reviews");
 
       if (name) panelTitle.textContent = name;
       if (description) panelDescription.textContent = description;
+      if (reviews) panelReviews.textContent = `(${reviews} avis)`;
+
+      // **Forcer la mise à jour des étoiles**
+      if (panelRating) {
+        panelRating.innerHTML = ""; // **Vider le contenu actuel pour éviter les duplications**
+        panelRating.innerHTML = generateStars(rating);
+      }
     }
   }
 
-  // Met à jour le panneau actif à chaque changement de slide
+  function generateStars(rating) {
+    let starsHtml = "";
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        starsHtml += '<i class="fas fa-star text-yellow-500 text-xl"></i>';
+      } else if (i - 0.5 <= rating) {
+        starsHtml +=
+          '<i class="fas fa-star-half-alt text-yellow-500 text-xl"></i>';
+      } else {
+        starsHtml += '<i class="far fa-star text-gray-300 text-xl"></i>';
+      }
+    }
+    return starsHtml;
+  }
+
   mainSlider.on("slideChange", () => {
-    updateActiveSlide(mainSlider);
+    setTimeout(() => updateActiveSlide(mainSlider), 100);
   });
 
-  // Permet de cliquer sur une slide pour la rendre active
   document.querySelectorAll(".swiper-slide").forEach((slide, index) => {
     slide.addEventListener("click", () => {
-      mainSlider.slideTo(index, 500, false); // Passe à l'index cliqué avec transition fluide
+      mainSlider.slideTo(index, 500, false);
+      setTimeout(() => updateActiveSlide(mainSlider), 100);
     });
   });
 
-  // Initialise l'affichage du panneau au premier chargement
   updateActiveSlide(mainSlider);
 });

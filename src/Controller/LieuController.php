@@ -2,14 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Avis;
+use App\Entity\Lieu;
+use App\Form\AvisType;
 use App\Repository\LieuRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LieuController extends AbstractController
 {
-    private $lieuRepository;
+    private LieuRepository $lieuRepository;
 
     public function __construct(LieuRepository $lieuRepository)
     {
@@ -19,14 +24,10 @@ class LieuController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        $lieux_culturels = $this->lieuRepository->findByType('Culturel');
-        $lieux_naturels = $this->lieuRepository->findByType('Naturel');
-        $lieux_vip = $this->lieuRepository->findByType('VIP');
-
         return $this->render('home/index.html.twig', [
-            'lieux_culturels' => $lieux_culturels,
-            'lieux_naturels' => $lieux_naturels,
-            'lieux_vip' => $lieux_vip,
+            'lieux_culturels' => $this->lieuRepository->findByType('Culturel'),
+            'lieux_naturels' => $this->lieuRepository->findByType('Naturel'),
+            'lieux_vip' => $this->lieuRepository->findByType('VIP'),
         ]);
     }
 
@@ -45,29 +46,43 @@ class LieuController extends AbstractController
             throw $this->createNotFoundException('Type de lieu non valide.');
         }
 
-        $lieux = $this->lieuRepository->findByType($typeLabel);
-
-        if (empty($lieux)) {
-            $this->addFlash('warning', "Aucun lieu $typeLabel trouvé.");
-        }
-
         return $this->render('lieu/list.html.twig', [
-            'type' => ucfirst($type), // Affiche le type sous un format utilisateur
-            'lieux' => $lieux,
+            'type' => ucfirst($type),
+            'lieux' => $this->lieuRepository->findByType($typeLabel),
         ]);
     }
 
     #[Route('/lieu/{id}', name: 'lieu_detail')]
-    public function detail(int $id): Response
-    {
-        $lieu = $this->lieuRepository->find($id);
+    public function detail(
+        Lieu $lieu,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $user = $this->getUser();
+        $form = null;
 
-        if (!$lieu) {
-            throw $this->createNotFoundException('Lieu introuvable');
+        if ($user) {
+            $avis = new Avis();
+            $form = $this->createForm(AvisType::class, $avis);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $avis->setLieu($lieu);
+                $avis->setUser($user);
+                $avis->setDateCreation(new \DateTime());
+
+                $entityManager->persist($avis);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Votre avis a été ajouté avec succès !');
+                return $this->redirectToRoute('lieu_detail', ['id' => $lieu->getId()]);
+            }
         }
 
         return $this->render('lieu/detail.html.twig', [
             'lieu' => $lieu,
+            'form' => $form ? $form->createView() : null,
+            'avis' => $lieu->getAvis(),
         ]);
     }
 }

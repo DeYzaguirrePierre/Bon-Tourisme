@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello LieuController!{% endblock %}
+{% block title %}{{ lieu.nom }} - Détails{% endblock %}
 
 {% block body %}
 
@@ -8,14 +8,90 @@
     <div class="bg-white rounded-lg shadow-lg flex max-w-4xl h-96">
         <img src="/uploads/{{ lieu.image }}" class="w-1/2 h-full object-cover rounded-l-lg" alt="{{ lieu.nom }}">
         <div class="px-10 pb-10 pt-2 w-1/2 flex flex-col justify-between">
-            <h2 class="text-4xl font-bold text-[#763538] text-center mt-0">{{ lieu.nom }}</h2>
+            <div class="flex justify-between items-center">
+                <h2 class="text-4xl font-bold text-[#763538]">{{ lieu.nom }}</h2>
+                
+                <!-- Affichage des étoiles basées sur la moyenne -->
+                <div class="flex items-center">
+                    {% set moyenne = lieu.getMoyAvis %}
+                    {% for i in 1..5 %}
+                        {% if i <= moyenne %}
+                            <i class="fas fa-star text-yellow-500 text-xl"></i>
+                        {% elseif i - 0.5 == moyenne %}
+                            <i class="fas fa-star-half-alt text-yellow-500 text-xl"></i>
+                        {% else %}
+                            <i class="far fa-star text-gray-300 text-xl"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="text-gray-500 text-sm ml-2">({{ lieu.getNbAvis }} avis)</span>
+                </div>
+            </div>
+
             <p class="text-[#763538] text-center my-auto">{{ lieu.description }}</p>
         </div>
     </div>
 </section>
 
+<!-- Formulaire d'ajout d'avis -->
+{% if is_granted('IS_AUTHENTICATED_FULLY') and form is defined %}
+<section class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 mt-10">
+    <h2 class="text-2xl font-bold text-[#763538] mb-4">Donnez votre avis</h2>
 
+    {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+        <div>
+            <label for="{{ form.note.vars.id }}" class="block text-sm font-medium text-gray-700">Note (1 à 5)</label>
+            {{ form_widget(form.note, {'attr': {'class': 'border p-2 rounded w-full'}}) }}
+        </div>
+        
+        <div>
+            <label for="{{ form.commentaire.vars.id }}" class="block text-sm font-medium text-gray-700">Commentaire</label>
+            {{ form_widget(form.commentaire, {'attr': {'class': 'border p-2 rounded w-full'}}) }}
+        </div>
 
+        <button type="submit"
+            class="mt-4 py-2 px-4 bg-[#763538] text-white font-medium border border-[#763538] rounded-md hover:bg-white hover:text-[#763538] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#763538]">
+            Soumettre mon avis
+        </button>
+    {{ form_end(form) }}
+</section>
+{% else %}
+    <p class="text-gray-600 text-center mt-4">
+        <a href="{{ path('app_login') }}" class="text-[#763538] underline">Connectez-vous</a> pour laisser un avis.
+    </p>
+{% endif %}
 
+<!-- Section des avis -->
+<section class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 mt-10">
+    <h2 class="text-2xl font-bold text-[#763538] mb-4">Avis des visiteurs</h2>
+
+    {% if avis is empty %}
+        <p class="text-gray-600">Aucun avis pour le moment. Soyez le premier à en laisser un !</p>
+    {% else %}
+        <div class="space-y-6">
+            {% for avis_item in avis %}
+                <div class="border p-4 rounded-lg shadow-md">
+                    <p class="text-lg font-semibold">{{ avis_item.user.email }}</p>
+
+                    <!-- Système de notation en étoiles -->
+                    <div class="flex items-center mt-1">
+                        {% set note = avis_item.note %}
+                        {% for i in 1..5 %}
+                            {% if i <= note %}
+                                <i class="fas fa-star text-yellow-500 text-xl"></i>
+                            {% elseif i - 0.5 == note %}
+                                <i class="fas fa-star-half-alt text-yellow-500 text-xl"></i>
+                            {% else %}
+                                <i class="far fa-star text-gray-300 text-xl"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <p class="text-gray-600 italic">"{{ avis_item.commentaire }}"</p>
+                    <p class="text-xs text-gray-400">Ajouté le {{ avis_item.dateCreation|date('d/m/Y à H:i') }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
 
 {% endblock %}
