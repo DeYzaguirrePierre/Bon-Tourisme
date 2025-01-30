@@ -21,7 +21,7 @@
         <div class="swiper mySwiper2">
             <div class="swiper-wrapper">
                 {% for lieu in lieux %}
-                    <div class="swiper-slide"
+                    <div class="swiper-slide cursor-pointer"
                          data-name="{{ lieu.nom }}"
                          data-description="{{ lieu.description }}"
                          data-image="/uploads/{{ lieu.image }}">
@@ -38,9 +38,6 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-pagination"></div>
         </div>
     {% endif %}
 </div>

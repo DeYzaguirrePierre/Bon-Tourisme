@@ -10,16 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   new Swiper(".mySwiper", {
     grabCursor: true,
     loop: true,
-    centeredSlides: true,
-    spaceBetween: 10,
     slidesPerView: 4,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
+    spaceBetween: 70,
   });
 });

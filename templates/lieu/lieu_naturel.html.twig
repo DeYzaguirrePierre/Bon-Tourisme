@@ -12,15 +12,15 @@
     {% if lieux is empty %}
         <p class="text-center text-gray-600">Aucun lieu naturel disponible pour le moment.</p>
     {% else %}
-        <div class="swiper mySwiper" style="width: 100%; height: auto;">
+    <div class="relative -mx-4">
+        <div class="swiper mySwiper relative">
             <div class="swiper-wrapper">
                 {% for lieu in lieux %}
-                    <div class="swiper-slide">
-                        <div class="bg-white shadow-md rounded-lg overflow-hidden w-64 m-4">
-                            <img src="/uploads/{{ lieu.image }}" alt="{{ lieu.nom }}" class="w-full h-40 object-cover">
-                            <div class="p-4">
+                    <div class="swiper-slide cursor-pointer">
+                        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                            <img src="/uploads/{{ lieu.image }}" alt="{{ lieu.nom }}" class="object-cover w-full h-48">
+                            <div class="p-2">
                                 <h2 class="text-lg font-semibold text-[#763538]">{{ lieu.nom }}</h2>
-                                <p class="text-gray-600">{{ lieu.description | slice(0, 100) ~ '...' }}</p>
                                 <a href="{{ path('lieu_detail', { id: lieu.id }) }}" class="text-[#763538] underline mt-2 block">
                                     En savoir plus...
                                 </a>
@@ -29,13 +29,11 @@
                     </div>
                 {% endfor %}
             </div>
-            <!-- Navigation buttons -->
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-pagination"></div>
         </div>
+    </div>
     {% endif %}
 </div>
+
 {% block javascripts %}
     {{ encore_entry_script_tags('swiper_base') }}
 {% endblock %}
